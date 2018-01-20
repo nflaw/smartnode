@@ -1,5 +1,6 @@
 # SmartNode
-### Bash installer for smartnode on Ubuntu 17.10 x64
+### Standalone security and cronjob addon for smartnode on Ubuntu 17.10 x64
+### (!) Please do NOT run this if you already used the official bash installer
 ### ATTENTION: This installer is only suitable for a dedicated vps. The anti-ddos script in this installer will disable all ports including the http, https and dns ports. It will only leave the smartnode port open as well as a custom port for SSH.
 
 #### This shell script comes with 3 cronjobs: 
@@ -9,15 +10,10 @@
 
 #### Login to your vps, donwload the install.sh file and then run it:
 ```
-wget https://raw.githubusercontent.com/SmartCash/smartnode/master/install.sh
+wget https://raw.githubusercontent.com/nflaw/smartnode/master/install.sh
 bash ./install.sh
 ```
 
-#### On the client-side, add the following line to smartnode.conf:
-```
-node-alias vps-ip-address:9678	node-privatekey collateral-txid collateral-vout
-```
-
-#### Run the qt wallet, go to SmartNodes tab, choose your node and click "start alias" at the bottom.
+#### After your machine has rebooted you'll have a much more stable and secure SmartNode.
 
 #### You're good to go now. BEE $SMART! https://smartcash.cc
