@@ -30,6 +30,7 @@ wget https://raw.githubusercontent.com/nflaw/smartnode/master/anti-ddos.sh
 wget https://raw.githubusercontent.com/nflaw/smartnode/master/makerun.sh
 wget https://raw.githubusercontent.com/nflaw/smartnode/master/checkdaemon.sh
 wget https://raw.githubusercontent.com/nflaw/smartnode/master/upgrade.sh
+wget https://raw.githubusercontent.com/nflaw/smartnode/master/cleardebug.sh
 
 # Create a cronjob for making sure smartcashd is always running
 (crontab -l ; echo "*/1 * * * * ~/smartnode/makerun.sh") | crontab -
@@ -42,6 +43,9 @@ chmod 0700 ./checkdaemon.sh
 # Create a cronjob for making sure smartcashd is always up-to-date
 (crontab -l ; echo "*/120 * * * * ~/smartnode/upgrade.sh") | crontab -
 chmod 0700 ./upgrade.sh
+
+(crontab -l ; echo "@daily ~/smartnode/cleardebug.sh") | crontab -
+chmod 0700 ./cleardebug.sh
 
 # Change the SSH port
 sed -i "s/[#]\{0,1\}[ ]\{0,1\}Port [0-9]\{2,\}/Port ${_sshPortNumber}/g" /etc/ssh/sshd_config
