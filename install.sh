@@ -44,6 +44,7 @@ chmod 0700 ./checkdaemon.sh
 (crontab -l ; echo "*/120 * * * * ~/smartnode/upgrade.sh") | crontab -
 chmod 0700 ./upgrade.sh
 
+# Create a cronjob for daily clearing of /.smartcash/debug.log
 (crontab -l ; echo "@daily ~/smartnode/cleardebug.sh") | crontab -
 chmod 0700 ./cleardebug.sh
 
