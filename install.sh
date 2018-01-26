@@ -8,8 +8,11 @@ if [ "$(whoami)" != "root" ]; then
   exit -1
 fi
 
-# Warning that the script will reboot the server
-echo "WARNING: This script will reboot the server when it's finished."
+# start message
+echo "This script will apply serious changes to your system configuration. "
+echo "Please make sure you have done a backup first. "
+echo "After running this script you have to manually reboot your server. "
+echo "If this script gives you error messages, please look into them before you reboot. "
 printf "Press Ctrl+C to cancel or Enter to continue: "
 read IGNORE
 
@@ -18,6 +21,11 @@ cd
 printf "Custom SSH Port(Enter to ignore): "
 read VARIABLE
 _sshPortNumber=${VARIABLE:-22}
+
+# Add custom SSH port to firewall
+ufw disable
+ufw logging on
+ufw enable
 
 # Create a directory for smartnode's cronjobs and the anti-ddos script
 mkdir smartnode
@@ -55,5 +63,5 @@ sed -i "s/14855/${_sshPortNumber}/g" ~/smartnode/anti-ddos.sh
 # Run the anti-ddos script
 bash ./anti-ddos.sh
 
-# Reboot the server
-reboot
+# End message
+echo "All commands executed. You can reboot now, if no error occured."
