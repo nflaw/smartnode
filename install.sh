@@ -24,6 +24,8 @@ _sshPortNumber=${VARIABLE:-22}
 
 # Add custom SSH port to firewall
 ufw disable
+ufw allow "$_sshPortNumber"/tcp
+ufw limit "$_sshPortNumber"/tcp
 ufw logging on
 ufw enable
 
