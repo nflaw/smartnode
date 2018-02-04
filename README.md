@@ -15,6 +15,6 @@ wget https://raw.githubusercontent.com/nflaw/smartnode/master/install.sh
 bash ./install.sh
 ```
 
-#### After your machine has rebooted you'll have a much more stable and secure SmartNode.
+#### After your machine has rebooted, you'll have a much more stable and secure SmartNode.
 
 #### You're good to go now. BEE $SMART! https://smartcash.cc
