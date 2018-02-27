@@ -27,6 +27,8 @@ ufw disable
 ufw allow "$_sshPortNumber"/tcp
 ufw limit "$_sshPortNumber"/tcp
 ufw logging on
+ufw default deny incoming
+ufw default allow outgoing
 ufw enable
 
 # Create a directory for smartnode's cronjobs and the anti-ddos script
@@ -36,34 +38,44 @@ mkdir smartnode
 cd ~/smartnode/
 
 # Download the appropriate scripts
-wget https://raw.githubusercontent.com/nflaw/smartnode/master/anti-ddos.sh
 wget https://raw.githubusercontent.com/nflaw/smartnode/master/makerun.sh
 wget https://raw.githubusercontent.com/nflaw/smartnode/master/checkdaemon.sh
 wget https://raw.githubusercontent.com/nflaw/smartnode/master/upgrade.sh
 wget https://raw.githubusercontent.com/nflaw/smartnode/master/cleardebug.sh
 
+# Create a cronjob for making sure smartcashd runs after reboot
+if ! crontab -l | grep "@reboot smartcashd"; then
+  (crontab -l ; echo "@reboot smartcashd") | crontab -
+fi
+
 # Create a cronjob for making sure smartcashd is always running
-(crontab -l ; echo "*/1 * * * * ~/smartnode/makerun.sh") | crontab -
-chmod 0700 ./makerun.sh
+if ! crontab -l | grep "~/smartnode/makerun.sh"; then
+  (crontab -l ; echo "*/5 * * * * ~/smartnode/makerun.sh") | crontab -
+fi
 
 # Create a cronjob for making sure the daemon is never stuck
-(crontab -l ; echo "*/30 * * * * ~/smartnode/checkdaemon.sh") | crontab -
-chmod 0700 ./checkdaemon.sh
+if ! crontab -l | grep "~/smartnode/checkdaemon.sh"; then
+  (crontab -l ; echo "*/30 * * * * ~/smartnode/checkdaemon.sh") | crontab -
+fi
 
 # Create a cronjob for making sure smartcashd is always up-to-date
-(crontab -l ; echo "*/120 * * * * ~/smartnode/upgrade.sh") | crontab -
-chmod 0700 ./upgrade.sh
+if ! crontab -l | grep "~/smartnode/upgrade.sh"; then
+  (crontab -l ; echo "0 0 */1 * * ~/smartnode/upgrade.sh") | crontab -
+fi
 
-# Create a cronjob for daily clearing of /.smartcash/debug.log
-(crontab -l ; echo "@daily ~/smartnode/cleardebug.sh") | crontab -
+# Create a cronjob for clearing the log file
+if ! crontab -l | grep "~/smartnode/cleardebug.sh"; then
+  (crontab -l ; echo "@daily ~/smartnode/cleardebug.sh") | crontab -
+fi
+
+# Give execute permission to the cron scripts
+chmod 0700 ./makerun.sh
+chmod 0700 ./checkdaemon.sh
+chmod 0700 ./upgrade.sh
 chmod 0700 ./cleardebug.sh
 
 # Change the SSH port
 sed -i "s/[#]\{0,1\}[ ]\{0,1\}Port [0-9]\{2,\}/Port ${_sshPortNumber}/g" /etc/ssh/sshd_config
-sed -i "s/14855/${_sshPortNumber}/g" ~/smartnode/anti-ddos.sh
-
-# Run the anti-ddos script
-bash ./anti-ddos.sh
 
 # End message
 echo "All commands executed. You can reboot now, if no error occured."
